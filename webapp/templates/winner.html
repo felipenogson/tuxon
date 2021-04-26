@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block content%}
+
+<section class="py-5 text-center container">
+  <div class="row py-lg-5">
+    <div class="col-lg-6 col-md-8 mx-auto">
+      <h1>🎉🎈🎉 Winner!! 🎉🎈🎉</h1>
+      <h1 class="fw-light">Egg Hunting </h1>
+      {% if current_user.tuxcoins.count() != 0 %}
+        <p class="lead text-muted">Congratulations!! You have found {{ current_user.tuxcoins.count() }} places. </p>
+      {% else %} 
+        <p class="lead text-muted">Sad Face... You have not found any places.</p>
+        <p>Till now, explore and find a new place.</p>
+      {% endif %}
+      <p>
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+        Claim your price!
+      </button>
+      </p>
+      <p class="fs-6">Caution: if this page is closed or reloaded you may lose the price, I'm sorry</p>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block extras %}
+  <!-- Button trigger modal -->
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Congratulations!!</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="card" style="width: 18rem;">
+          <img src="{{ url_for('static', filename='coffe_icon.png')}}" class="card-img-top" alt="...">
+          <div class="card-body">
+            <p class="card-text">Now you found {{ current_user.tuxcoins.count() }} places.</p>
+            <h3> You just Won a deliciuos Coffe</h3>
+            <p> Show this message to feli to claim your price</p>
+            <h4> You may rather screenshot it or something...</h4>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

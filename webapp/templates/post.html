@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <form action="/post" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <div class="mb-3">
+            <label for="formFile" class="form-label">Upload the image</label>
+            <input class="form-control" name="file" type="file" id="formFile" placeholder="Only image formats" required>
+          </div>
+        <div class="mb-3">
+            <label for="post_title" class="form-label">Title</label>
+            <input type="text" name="title" class="form-control" id="post_title" placeholder="Write your title" required>
+        </div>
+        <div class="mb-3">
+            <label for="post_description" class="form-label">Description</label>
+            <input type="text" name="description" class="form-control" id="post_description" placeholder="Optional...">
+        </div>
+        <div class="mb-3">
+            <button type="submit" class="btn btn-primary">Publish</button>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

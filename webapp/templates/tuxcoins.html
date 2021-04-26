@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content%}
+
+<section class="py-5 text-center container">
+  <div class="row py-lg-5">
+    <div class="col-lg-6 col-md-8 mx-auto">
+      <h1 class="fw-light">Egg Hunting Points</h1>
+      {% if current_user.tuxcoins.count() != 0 %}
+        <p class="lead text-muted">Congratulations!! You have found {{ current_user.tuxcoins.count() }} places already. </p>
+      {% else %} 
+        <p class="lead text-muted">Sad Face... You have not found any places.</p>
+        <p>Till now, explore and find a new place.</p>
+      {% endif %}
+      <p>
+        <a href="#" class="btn btn-secondary my-2">Explore</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block explore %}
+<div class="album py-5 bg-light">
+    <div class="container">
+
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+        {% for post in posts %}
+        <div class="col">
+          <div class="card shadow-sm">
+            <img src="{{url_for('photo', filename=post.post.img)}}" alt="{{post.title}}" width="100%", height="225">
+
+            <div class="card-body">
+              <h5 class="card-title">{{post.post.title}}</h5>
+              <p class="card-text">{{ post.post.description }}</p>
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="btn-group">
+                  <a href="{{ url_for('view', id=post.post.id)}}" class="btn btn-sm btn-outline-secondary">View</a>
+                </div>
+                <small class="text-muted">2 mins</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+  {% endblock %}

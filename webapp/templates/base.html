@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  {% if title %}
+  <title>{{ title }}</title>
+  {% else %}
+  <title>Flask-feli-project</title>
+  {% endif %}
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js" integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/" crossorigin="anonymous"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
+
+      <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+</head>
+<body>
+    <header>
+      <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+          <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none">
+            <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
+          </a>
+    
+          <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+            <li><a href="/" class="nav-link px-2 link-secondary">🙅 egg hunting</a></li>
+          </ul>
+          
+          {% if current_user.is_authenticated %}
+          <div class="dropdown text-end">
+            <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+              <img src="{{google_data['picture'] }}" alt="mdo" width="32" height="32" class="rounded-circle">
+            </a>
+            <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
+              {% if current_user.email == "pon.felipon@gmail.com" %}
+              <li><a class="dropdown-item" href="{{ url_for('post') }}">New post...</a></li>
+              {% endif %}
+              <li><a class="dropdown-item" href="{{ url_for('tuxcoins') }}">Tuxcoins <span class="badge rounded-pill bg-warning text-dark">{{current_user.tuxcoins.count()}}</span></a></li>
+              <li><a class="dropdown-item" href="#">Profile</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="{{ url_for('logout') }}">Sign out</a></li>
+            </ul>
+          </div>
+          {% else %}
+          <div class="text-end">
+            <a href="/google" class="btn btn-warning">Sign-in</a>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </header>
+        <div class="row">
+          {% with messages = get_flashed_messages(with_categories=True) %}
+          {% if messages %}
+            <ul class=flashes>
+            {% for category, message in messages %}
+              <li>
+                <div class="alert alert-{{category}} alert-dismissible fade show" role="alert">
+                  <strong>{{message}}</strong> 
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+              </li>
+            {% endfor %}
+            </ul>
+          {% endif %}
+          {% endwith %}
+        </div>
+    
+    <main>
+    {% block content %}
+      <section class="py-5 text-center container">
+        <div class="row py-lg-5">
+          <div class="col-lg-6 col-md-8 mx-auto">
+            <h1 class="fw-light">Egg Hunting</h1>
+            <p class="lead text-muted">There are virtual easter eggs hiden in this city, find them, have fun, explore your city and go and tell your friends</p>
+            <p>
+              <a href="#" class="btn btn-primary my-2">Scan a found egg!</a>
+              <a href="#" class="btn btn-secondary my-2">Explore</a>
+            </p>
+          </div>
+        </div>
+      </section>
+    {% endblock %}
+   {% block explore%} 
+   {% endblock %}
+   {% block extras %}
+   {% endblock %}
+      
+    </main>
+    
+    <footer class="text-muted py-5">
+      <div class="container">
+        <p class="float-end mb-1">
+          <a href="#">Back to top</a>
+        </p>
+        <p class="mb-1">tuxon easter egg is using &copy;Linux, &copy;Docker, &copy;MySQL, &copy;Python, &copy;Flask, &copy;Bootstrap,</p>
+        <p class="mb-0"> Doubts and Not a fambam member? > Send me a mail <a href="mailto:felipe@nogson.com">felipe@nogson.com</a></p>
+      </div>
+    </footer>
+    
+          
+</body>
+</html>
