@@ -8,6 +8,11 @@
         {% for post in posts %}
         <div class="col">
           <div class="card shadow-sm">
+            {% if (current_user.is_authenticated) and (post.tuxcoins.filter_by(user_id = current_user.id).all()) %}
+            <div class="card-header"><span class="badge rounded-pill bg-success">Found</span> </div>
+            {% else %}
+            <div class="card-header">&nbsp;</div>
+            {% endif %}
             <img src="{{url_for('photo', filename=post.img)}}" alt="{{post.title}}" width="100%", height="225">
 
             <div class="card-body">

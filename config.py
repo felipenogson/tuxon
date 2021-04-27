@@ -10,3 +10,4 @@ class Config(object):
     GOOGLE_ID = os.getenv('GOOGLE_ID')
     GOOGLE_SECRET = os.getenv('GOOGLE_SECRET')
     UPLOAD_FOLDER = os.path.join(basedir, 'photos')
+    USE_SESSION_FOR_NEXT = True

@@ -2,7 +2,7 @@ import os
 import secrets
 from webapp import app, db
 from webapp.models import OAuth, User, Postcoin, Tuxcoin
-from flask import render_template, flash, redirect, url_for, request, send_from_directory, abort, make_response
+from flask import render_template, flash, redirect, url_for, request, send_from_directory, abort, make_response, session
 from werkzeug.utils import secure_filename
 import pdfkit
 
@@ -22,7 +22,7 @@ google_blueprint = make_google_blueprint(
            'https://www.googleapis.com/auth/userinfo.profile', 'openid'], 
     offline=True,
     reprompt_consent=True,
-    storage=SQLAlchemyStorage(OAuth, db.session, user=current_user)
+    storage=SQLAlchemyStorage(OAuth, db.session, user=current_user),
     )
 
 app.register_blueprint(google_blueprint)
@@ -35,10 +35,6 @@ def index():
         google_data = google.get(user_info_endpoint).json()
     postcoins = Postcoin.query.all()
     return render_template('index.html', title="Easter Egg Hunting",  google_data=google_data, posts=postcoins)
-    return render_template('index.j2',
-                            google_data=google_data,
-                            fetch_url= google.base_url + user_info_endpoint)
-
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 def allowed_file(filename):
@@ -189,4 +185,6 @@ def google_logged_in(blueprint, token):
         db.session.commit() 
         login_user(user)
 
+    next = session.pop('next', url_for('index'))
+    return redirect(next)
     return False
