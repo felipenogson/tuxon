@@ -5,6 +5,7 @@ from webapp.models import OAuth, User, Postcoin, Tuxcoin
 from flask import render_template, flash, redirect, url_for, request, send_from_directory, abort, make_response, session
 from werkzeug.utils import secure_filename
 import pdfkit
+from PIL import Image
 
 from flask_login import current_user, login_user, logout_user, login_required
 
@@ -34,7 +35,21 @@ def index():
     if current_user.is_authenticated and google.authorized:
         google_data = google.get(user_info_endpoint).json()
     postcoins = Postcoin.query.all()
-    return render_template('index.html', title="Easter Egg Hunting",  google_data=google_data, posts=postcoins)
+    # Usar el api de google para obtener los tiempos de las distancias
+    google_matrix_api = 'https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial'
+    origins = "&origins="
+    destinations = "&destinations="
+    google_api_key = f"&key={app.config['GOOGLE_API_KEY']}"
+    for post in postcoins:
+        if post.lat != None:
+            destinations += f"{post.lat},{post.lng}|"
+        else:
+            # En caso de que no teng latitud esto hace que el api de google devuelva Nulo el campo
+            destinations += f"XXXXXXXXXX,XXXXXXXXX|"
+    destinations = destinations[:-1]
+    google_matrix_query = google_matrix_api+origins+destinations+google_api_key
+    print(google_matrix_query)
+    return render_template('index.html', title="Easter Egg Hunting",  google_data=google_data, posts=postcoins, g_query=google_matrix_query)
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 def allowed_file(filename):
@@ -60,13 +75,27 @@ def post():
             filename = secure_filename(file.filename)
             photo_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(photo_path)
+
+            # Obener datos gps
+            from GPSPhoto import gpsphoto
+            gpsdata = gpsphoto.getGPSData(photo_path)
+
+
+
+            # Preprocesar la imagen
+            basewidth = 1333
+            img = Image.open(photo_path)
+            wpercent = (basewidth/float(img.size[0]))
+            hsize = int((float(img.size[1]) * float(wpercent)))
+            img2 = img.resize((basewidth, hsize), Image.ANTIALIAS)
+            img2.save(photo_path)
             
             coinToken = secrets.token_urlsafe()
             post = Postcoin(
                     title = request.form['title'], 
                     description = request.form.get('description'),
-                    #  lat =
-                    #  lng =
+                    lat = gpsdata.get('Latitude'),
+                    lng = gpsdata.get('Longitude'),
                     token = coinToken,
                     # Ojo aqui, cambiar el protocolo de http a https para subir a produccion
                     url = request.url_root[:-1] + url_for('found', token=coinToken),

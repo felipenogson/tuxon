@@ -22,10 +22,36 @@
                 <div class="btn-group">
                   <a href="{{ url_for('view', id=post.id)}}" class="btn btn-sm btn-outline-secondary">View</a>
                 </div>
-                <small class="text-muted">2 mins</small>
+                <small class="text-muted distance" id="post-{{loop.index}}">2 mins</small>
               </div>
             </div>
           </div>
         </div>
         {% endfor %}
+        <script>
+          g_query = "{{ g_query|safe }}";
+          function get_matrix_times(coords){
+            origins = `&origins=${coords.coords.latitude},${coords.coords.longitude}`;
+            query = g_query.replace('&origins=', origins);
+            elements = (document.getElementsByClassName('distance'));
+            elements.foreach = Array.prototype.forEach;
+            fetch(query)
+            .then(req => req.json())
+            .then(data => {
+              var distances = data['rows'][0].elements;
+                elements.foreach( (element, index) =>{
+                  if(distances[index]['status'] == 'OK'){
+                  element.innerHTML = distances[index]['duration']['text'];
+                  }
+                  else{
+                    console.log('hola', element);
+                    element.innerHTML = 'gsm data not available';
+                  }
+                
+              });
+          });
+        }
+        navigator.geolocation.getCurrentPosition(get_matrix_times);
+
+        </script>
   {% endblock %}
